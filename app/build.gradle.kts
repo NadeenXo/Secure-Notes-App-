@@ -68,4 +68,8 @@ dependencies {
     ksp(libs.room.compiler)
     testImplementation(libs.room.testing)
 
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.androidx.compose)
+
 }
