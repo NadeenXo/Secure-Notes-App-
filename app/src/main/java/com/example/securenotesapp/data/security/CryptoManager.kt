@@ -10,39 +10,14 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 class CryptoManager {
-
-    data class EncryptedPayload(
-        val cipherText: ByteArray,
-        val iv: ByteArray
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as EncryptedPayload
-
-            if (!cipherText.contentEquals(other.cipherText)) return false
-            if (!iv.contentEquals(other.iv)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = cipherText.contentHashCode()
-            result = 31 * result + iv.contentHashCode()
-            return result
-        }
-    }
-
-
     private fun getOrCreateKey(): SecretKey {
-        val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+        val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
         val existing = keyStore.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
         if (existing != null) return existing.secretKey
 
         val keyGenerator = KeyGenerator.getInstance(
             KeyProperties.KEY_ALGORITHM_AES,
-            "AndroidKeyStore"
+            ANDROID_KEYSTORE
         )
 
         val spec = KeyGenParameterSpec.Builder(
@@ -60,21 +35,28 @@ class CryptoManager {
     }
 
     fun encrypt(plainText: String): EncryptedPayload {
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, getOrCreateKey())
         val cipherText = cipher.doFinal(plainText.toByteArray(StandardCharsets.UTF_8))
         return EncryptedPayload(cipherText = cipherText, iv = cipher.iv)
     }
 
-    fun decrypt(cipherText: ByteArray, iv: ByteArray): String {
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        val spec = GCMParameterSpec(128, iv)
-        cipher.init(Cipher.DECRYPT_MODE, getOrCreateKey(), spec)
-        val plain = cipher.doFinal(cipherText)
-        return String(plain, StandardCharsets.UTF_8)
+    fun decrypt(cipherText: ByteArray, iv: ByteArray): String = try {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.DECRYPT_MODE, getOrCreateKey(), GCMParameterSpec(TAG_LENGTH_BITS, iv))
+        String(cipher.doFinal(cipherText), StandardCharsets.UTF_8)
+    } catch (e: Exception) {
+        throw IllegalStateException(
+            "Failed to decrypt note: $e",
+            e
+        )
     }
-    companion object{
-        private const val KEY_ALIAS = "secure_notes_aes_key"
+
+    companion object {
+        private const val KEY_ALIAS = "com.example.securenotesapp.secure_notes_aes_key"
+        private const val TRANSFORMATION = "AES/GCM/NoPadding"
+        private const val TAG_LENGTH_BITS = 128
+        private const val ANDROID_KEYSTORE = "AndroidKeyStore"
 
     }
 }
