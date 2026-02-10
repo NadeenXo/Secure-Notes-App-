@@ -30,8 +30,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.securenotesapp.R
 import com.example.securenotesapp.domain.Note
 import java.time.Instant
 import java.time.ZoneId
@@ -52,14 +54,11 @@ fun NotesListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Secure Notes") })
+            TopAppBar(title = { Text(stringResource(R.string.app_name)) })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAdd) {
-                Icon(Icons.Default.Add, contentDescription = "Add note")
-//                FloatingActionButton(onClick = onAdd) {
-//                    Text("+")
-//                }
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_note))
             }
         }
     ) { padding ->
@@ -94,10 +93,10 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("No notes yet", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.no_notes_yet), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(8.dp))
         Text(
-            "Tap + to add your first secure note.",
+            stringResource(R.string.tap_to_add_your_first_note),
             style = MaterialTheme.typography.bodyMedium
         )
     }
@@ -121,7 +120,7 @@ private fun NoteItem(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = note.title.ifBlank { "(Untitled)" },
+                        text = note.title.ifBlank { stringResource(R.string.untitled) },
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -136,7 +135,6 @@ private fun NoteItem(
 
                     Spacer(Modifier.height(10.dp))
 
-                    // Optional preview (still not storing plaintext in DB — this is decrypted in repo)
                     Text(
                         text = note.content,
                         style = MaterialTheme.typography.bodyMedium,

@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.securenotesapp.R
@@ -47,16 +48,30 @@ fun NoteDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (viewModel.isNewNote) "New Note" else "Edit Note") },
+                title = {
+                    Text(
+                        if (viewModel.isNewNote) stringResource(R.string.new_note) else stringResource(
+                            R.string.edit_note
+                        )
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(
+                                R.string.back
+                            )
+                        )
                     }
                 },
                 actions = {
                     if (!viewModel.isNewNote) {
                         IconButton(onClick = { viewModel.delete { onBack() } }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete note")
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete)
+                            )
                         }
                     }
                 }
@@ -84,7 +99,7 @@ fun NoteDetailsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Created: ${formatCreatedAt(state.createdAt)}",
+                text = stringResource(R.string.created, formatCreatedAt(state.createdAt)),
                 style = MaterialTheme.typography.labelMedium
             )
 
@@ -92,7 +107,7 @@ fun NoteDetailsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 value = state.title,
                 onValueChange = viewModel::onTitleChange,
-                label = { Text("Title") },
+                label = { Text(stringResource(R.string.title)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
@@ -103,7 +118,7 @@ fun NoteDetailsScreen(
                     .weight(1f),
                 value = state.content,
                 onValueChange = viewModel::onContentChange,
-                label = { Text("Content") }
+                label = { Text(stringResource(R.string.content)) }
             )
 
             Spacer(Modifier.height(4.dp))
@@ -113,11 +128,11 @@ fun NoteDetailsScreen(
                 onClick = { viewModel.save { onBack() } }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_save),
-                    contentDescription = null
+                    painter = painterResource(R.drawable.save),
+                    contentDescription = stringResource(R.string.save)
                 )
                 Spacer(Modifier.width(8.dp))
-                Text("Save", modifier = Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.save), modifier = Modifier.padding(start = 8.dp))
             }
         }
     }
