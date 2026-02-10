@@ -31,6 +31,7 @@ val appModule = module {
         )
     }
 
+
     viewModel { NotesListViewModel(repository = get()) }
 
     viewModel { (noteId: Long) ->
