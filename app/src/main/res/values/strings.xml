@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">SecureNotesApp</string>
+    <string name="app_name">Secure Notes</string>
+    <string name="save">Save</string>
+    <string name="content">Content</string>
+    <string name="new_note">New Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="created">Created: %1$s</string>
+    <string name="title">Title</string>
+    <string name="add_note">Add note</string>
+    <string name="no_notes_yet">No notes yet</string>
+    <string name="tap_to_add_your_first_note">Tap + to add your first note.</string>
+    <string name="untitled">(Untitled)</string>
+    <string name="delete">Delete</string>
+    <string name="back">Back</string>
 </resources>
